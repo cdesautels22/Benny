@@ -1,0 +1,46 @@
+<!-- index.html -->
+<!doctype html>
+<html ng-app="myApp" ng-controller="TopController" style="background-color: {{latestColor}}">
+  <head style="background-color: {{latestColor}}">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="angular.js"></script>
+    <script src="browserStuff.js"></script>
+
+
+
+    <title>{{bbName}}</title>
+
+  </head>
+  <body style="background-color: {{latestColor}}">
+    <div class="container-fluid" ng-controller="httpController" style="background-color: {{latestColor}}">
+      <div class="page-header" style="border-bottom: solid black 1px">
+        <h3>{{bbName}}</h3>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <p>Connection status: {{cStat}}</p>
+          <button type="button" class="btn btn-default" ng-click="connectToTwitch(1);">Start Bot</button>
+          <button type="button" class="btn btn-default" ng-click="connectToTwitch(0);">Stop Bot</button>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <p>Latest: {{latestJoiner}}</p>
+        </div>
+        <div class="col-sm-4">
+          Search Viewers: <input type="text" ng-model="searchBar">
+          <ul>
+            <li ng-repeat="x in viewArr.vals | orderBy:x | filter: searchBar">{{x}}</li>
+          </ul>
+        </div>
+        <div class="col-sm-4"></div>
+      </div>
+    </div>
+
+
+  </body>
+</html>
