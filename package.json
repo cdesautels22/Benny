@@ -1,0 +1,21 @@
+{
+  "name": "eggghead",
+  "version": "1.0.0",
+  "description": "Bot for Twitch",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeff Brown",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.4",
+    "mongoose": "^4.5.8",
+    "tmi.js": "^1.2.1",
+    "ws": "^3.1.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "\\"
+  ]
+}
