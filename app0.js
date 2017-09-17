@@ -125,6 +125,8 @@ expApp.get(/.*disconnectFromTwitch.*/,function (req,res) {
 var userDB;
 var potentialWinners = [];
 var userCount = 0;
+
+// heist data
 var heist = true;
 const heistCountdown = 5*60;
 var heistTimer = heistCountdown;
@@ -132,6 +134,13 @@ var heistInterval;
 var collecting = false;
 var currentPool = 0;
 
+// 8clap data
+var clapParticipants = [];
+var clapActive = false;
+function resetClap() {
+  clapParticipants = [];
+  clapActive = false;
+}
 
 if(fs.existsSync('userDB.txt')) {
   var tmp = fs.readFileSync('userDB.txt');
@@ -183,6 +192,40 @@ client.on('chat',function(channel,user,msg,self){
     },5000);
 
   }
+
+  // Counting attempts while 8clap event is active
+  if (clapActive) {
+    var prevClapUser = null;
+    if (clapParticipants.length > 0) {
+      prevClapUser = clapParticipants[clapParticipants.length - 1];
+    }
+    if (parseInt(msg) === clapParticipants.length + 1 && user !== prevClapUser) {
+      // successful count
+      clapParticipants.push(user);
+      if (clapParticipants.length == 8) {
+        // successful 8 clap
+        uniqueParticipants = clapParticipants.filter(function(value, index, self) {
+          return self.indexOf(value) === index;
+        });
+        for (var userName in uniqueParticipants) {
+          userDB[userName]+=1000;
+        }
+        var jsonDB = JSON.stringify(userDB);
+        fs.writeFileSync('userDB.txt',jsonDB);
+
+        resetClap();
+        successMessage = "U-C-L-A UCLA fight fight fight! Enjoy your eggs! eggghePAN";
+        client.action(channelBroadcaster,successMessage);
+      }
+
+    } else {
+      // failed count
+      resetClap();
+      failureMessage = "Oh no! You failed the 8 Clap. Better luck next time!";
+      client.action(channelBroadcaster,failureMessage);
+    }
+  }
+
   // Everything else
   if(msg[0] !== '!')
     return;
@@ -277,6 +320,12 @@ client.on('chat',function(channel,user,msg,self){
 
       if(currentMessageCommand === "!addWin"){
           client.action(channelBroadcaster,"!title");
+      }
+
+      if(currentMessageCommand === "!8clap"){
+          clapActive = true;
+          var clapInstruction = "Count to 8 for a 1000-egg reward! The numbers must be in sequential comments and nobody can contribute two in a row. Go Bruins!"
+          client.action(channelBroadcaster, clapInstruction);
       }
 
       if(currentCommand[2] === "Display")
